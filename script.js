@@ -108,7 +108,8 @@ function renderNav() {
   home.onclick = () => renderHome();
   nav.appendChild(home);
 
-  Object.entries(checklists).forEach(([key, data]) => {
+  ['rings','spells','miracles','weapons','bossSouls'].forEach(key => {
+    const data = checklists[key];
     const c = countFor(key);
     const btn = document.createElement('button');
     btn.className = currentKey === key ? 'active' : '';
@@ -128,7 +129,8 @@ function renderHome() {
   list.innerHTML = '';
   dashboard.innerHTML = '';
 
-  Object.entries(checklists).forEach(([key, data]) => {
+  ['rings','spells','miracles','weapons','bossSouls'].forEach(key => {
+    const data = checklists[key];
     const c = countFor(key);
     const card = document.createElement('article');
     card.className = 'dash-card';
