@@ -127,10 +127,32 @@ function countFor(key) {
 function updateOverall() {
   let done = 0, total = 0;
   CHECKLIST_ORDER.forEach(key => { const c = countFor(key); done += c.done; total += c.total; });
+
   const percent = total ? Math.round(done / total * 100) : 0;
-  document.getElementById('overallPercent').textContent = `${percent}%`;
-  document.getElementById('overallCount').textContent = `${done} / ${total}`;
-  document.getElementById('overallFill').style.width = `${percent}%`;
+
+  const rings = countFor('rings');
+  const spells = countFor('spells');
+  const miracles = countFor('miracles');
+  const weapons = countFor('weapons');
+  const bossSouls = countFor('bossSouls');
+
+  const sideProgress = document.querySelector('.side-progress');
+
+  sideProgress.innerHTML = `
+    <div class="progress-label">
+      <span>Progress</span>
+      <span id="overallPercent">${percent}%</span>
+    </div>
+
+    <small>Rings ${rings.done}/${rings.total}</small>
+    <small>Spells ${spells.done}/${spells.total}</small>
+    <small>Miracles ${miracles.done}/${miracles.total}</small>
+    <small>Boss Weapons ${weapons.done}/${weapons.total}</small>
+    <small>Boss Souls ${bossSouls.done}/${bossSouls.total}</small>
+
+    <div class="bar"><div id="overallFill" style="width:${percent}%"></div></div>
+    <small id="overallCount">Overall ${done} / ${total}</small>
+  `;
 }
 
 function renderNav() {
