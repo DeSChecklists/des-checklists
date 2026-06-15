@@ -6,7 +6,7 @@ const bossSoulData = [
   { boss:'Penetrator', group:'World 1', soul:'Silver Demon Soul', rewards:['Light Weapon','Cursed Weapon'] },
   { boss:'False King', group:'World 1', soul:'False King Demon Soul', rewards:['Northern Regalia'] },
   { boss:'Armor Spider', group:'World 2', soul:'Hard Demon Soul', rewards:['Fire Spray','Ignite','Lava Bow'] },
-  { boss:'Flamelurker', group:'World 2', soul:'Searing Demon Soul', rewards:['Unlocks These Upgrades'] },
+  { boss:'Flamelurker', group:'World 2', soul:'Searing Demon Soul', soulCopies:1, rewards:[], specialEffect:'Unlocks Blacksmith Ed advanced upgrades.' },
   { boss:'Dragon God', group:'World 2', soul:'Dragon Demon Soul', rewards:['Fireball','Firestorm',"God's Wrath"] },
   { boss:"Fool's Idol", group:'World 3', soul:'Doll Demon Soul', rewards:['Soul Ray'] },
   { boss:'Maneater', group:'World 3', soul:'Mixed Demon Soul', rewards:['Needle of Eternal Agony'] },
@@ -140,7 +140,7 @@ function renderHome() {
 }
 
 function itemMatches(item, q) {
-  const haystack = [item.name, item.boss, item.group, item.soul, ...(item.rewards || [])].filter(Boolean).join(' ').toLowerCase();
+  const haystack = [item.name, item.boss, item.group, item.soul, item.specialEffect, ...(item.rewards || [])].filter(Boolean).join(' ').toLowerCase();
   return haystack.includes(q.toLowerCase());
 }
 
@@ -161,10 +161,11 @@ function renderBossSouls() {
     const body = group.querySelector('.group-body');
 
     bosses.forEach(boss => {
-      const required = boss.rewards.length;
+      const rewardCount = boss.rewards.length;
+      const required = boss.soulCopies || rewardCount;
       const done = boss.rewards.filter(reward => checked[bossRewardId(boss, reward)]).length;
       const card = document.createElement('article');
-      card.className = `boss-card ${done === required ? 'checked' : ''}`;
+      card.className = `boss-card ${rewardCount > 0 && done === rewardCount ? 'checked' : ''}`;
       card.innerHTML = `
         <div class="boss-head">
           <div>
@@ -173,8 +174,9 @@ function renderBossSouls() {
           </div>
           <span class="soul-count">Required ×${required}</span>
         </div>
-        <div class="boss-progress">${done} / ${required} rewards checked</div>
+        <div class="boss-progress">${rewardCount ? `${done} / ${rewardCount} rewards checked` : 'No checklist reward — informational only'}</div>
         <div class="reward-list"></div>
+        ${boss.specialEffect ? `<div class="special-effect"><strong>🔓 Special Effect</strong><span>${boss.specialEffect}</span></div>` : ''}
       `;
 
       const rewardList = card.querySelector('.reward-list');

@@ -176,3 +176,21 @@ input, button { font: inherit; }
   .boss-head { flex-direction: column; }
   .soul-count { align-self: flex-start; }
 }
+
+.special-effect {
+  margin-top: 12px;
+  padding: 14px;
+  border: 1px solid rgba(214, 179, 90, .32);
+  border-radius: 12px;
+  background: rgba(214, 179, 90, .07);
+  color: #d6c28a;
+  line-height: 1.5;
+}
+.special-effect strong {
+  display: block;
+  margin-bottom: 4px;
+  color: #fff3c8;
+}
+.special-effect span {
+  display: block;
+}
