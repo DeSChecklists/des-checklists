@@ -1,4 +1,5 @@
 const STORAGE_PREFIX = 'des-checklists-v2:';
+const CHECKLIST_ORDER = ['rings', 'spells', 'miracles', 'weapons', 'bossSouls'];
 
 const bossSoulData = [
   { boss:'Phalanx', group:'World 1', soul:'Lead Demon Soul', rewards:['Scraping Spear'] },
@@ -54,6 +55,13 @@ const checklists = {
   }
 };
 
+const rewardOwner = {};
+bossSoulData.forEach(boss => {
+  boss.rewards.forEach(reward => {
+    rewardOwner[reward] = boss;
+  });
+});
+
 let currentKey = 'home';
 const nav = document.getElementById('nav');
 const dashboard = document.getElementById('dashboard');
@@ -70,22 +78,47 @@ function bossRewardId(item, reward) { return `bossSouls:${item.boss}:${reward}`;
 function getChecked(key) { return JSON.parse(localStorage.getItem(STORAGE_PREFIX + key) || '{}'); }
 function setChecked(key, data) { localStorage.setItem(STORAGE_PREFIX + key, JSON.stringify(data)); }
 
+function isSharedReward(key, item) {
+  return key !== 'rings' && key !== 'bossSouls' && item && rewardOwner[item.name];
+}
+
+function itemStorageRef(key, item) {
+  if (isSharedReward(key, item)) {
+    const boss = rewardOwner[item.name];
+    return { key: 'bossSouls', id: bossRewardId(boss, item.name) };
+  }
+
+  return { key, id: idFor(key, item) };
+}
+
+function isItemChecked(key, item) {
+  const ref = itemStorageRef(key, item);
+  return !!getChecked(ref.key)[ref.id];
+}
+
+function setItemChecked(key, item, checked) {
+  const ref = itemStorageRef(key, item);
+  const saved = getChecked(ref.key);
+  saved[ref.id] = checked;
+  setChecked(ref.key, saved);
+}
+
 function getChecklistTotal(key) {
   if (key === 'bossSouls') return bossSoulData.reduce((sum, boss) => sum + boss.rewards.length, 0);
   return checklists[key].items.length;
 }
 
 function countFor(key) {
-  const checked = getChecked(key);
   const total = getChecklistTotal(key);
   let done = 0;
 
   if (key === 'bossSouls') {
+    const checked = getChecked('bossSouls');
     bossSoulData.forEach(boss => boss.rewards.forEach(reward => {
       if (checked[bossRewardId(boss, reward)]) done += 1;
     }));
   } else {
-    done = checklists[key].items.filter(item => checked[idFor(key, item)]).length;
+    done = checklists[key].items.filter(item => isItemChecked(key, item)).length;
   }
 
   return { done, total, percent: total ? Math.round(done / total * 100) : 0 };
@@ -93,7 +126,7 @@ function countFor(key) {
 
 function updateOverall() {
   let done = 0, total = 0;
-  Object.keys(checklists).forEach(key => { const c = countFor(key); done += c.done; total += c.total; });
+  CHECKLIST_ORDER.forEach(key => { const c = countFor(key); done += c.done; total += c.total; });
   const percent = total ? Math.round(done / total * 100) : 0;
   document.getElementById('overallPercent').textContent = `${percent}%`;
   document.getElementById('overallCount').textContent = `${done} / ${total}`;
@@ -108,7 +141,7 @@ function renderNav() {
   home.onclick = () => renderHome();
   nav.appendChild(home);
 
-  ['rings','spells','miracles','weapons','bossSouls'].forEach(key => {
+  CHECKLIST_ORDER.forEach(key => {
     const data = checklists[key];
     const c = countFor(key);
     const btn = document.createElement('button');
@@ -129,7 +162,7 @@ function renderHome() {
   list.innerHTML = '';
   dashboard.innerHTML = '';
 
-  ['rings','spells','miracles','weapons','bossSouls'].forEach(key => {
+  CHECKLIST_ORDER.forEach(key => {
     const data = checklists[key];
     const c = countFor(key);
     const card = document.createElement('article');
@@ -221,7 +254,6 @@ function renderChecklist(key) {
   }
 
   const q = searchInput.value.trim();
-  const checked = getChecked(key);
   const groups = {};
 
   data.items.filter(item => !q || itemMatches(item, q)).forEach(item => {
@@ -237,16 +269,13 @@ function renderChecklist(key) {
     const body = group.querySelector('.group-body');
 
     items.forEach(item => {
-      const id = idFor(key, item);
-      const isChecked = !!checked[id];
+      const isChecked = isItemChecked(key, item);
       const el = document.createElement('label');
       el.className = `item ${isChecked ? 'checked' : ''}`;
       const tags = (item.rewards || []).map(r => `<span class="tag">${r}</span>`).join('');
       el.innerHTML = `<input type="checkbox" ${isChecked ? 'checked' : ''}><div><h3>${item.name}</h3><div class="meta">${item.soul ? `Soul: ${item.soul}` : ''}</div>${tags ? `<div class="tags">${tags}</div>` : ''}</div>`;
       el.querySelector('input').onchange = (e) => {
-        const saved = getChecked(key);
-        saved[id] = e.target.checked;
-        setChecked(key, saved);
+        setItemChecked(key, item, e.target.checked);
         el.classList.toggle('checked', e.target.checked);
         renderNav(); updateOverall();
       };
@@ -258,12 +287,38 @@ function renderChecklist(key) {
   renderNav(); updateOverall(); closeMenu();
 }
 
+function resetCurrentChecklist() {
+  if (currentKey === 'home') return;
+
+  if (currentKey === 'bossSouls') {
+    localStorage.removeItem(STORAGE_PREFIX + 'bossSouls');
+    renderChecklist(currentKey);
+    return;
+  }
+
+  const ownSaved = getChecked(currentKey);
+  const bossSaved = getChecked('bossSouls');
+
+  checklists[currentKey].items.forEach(item => {
+    const ref = itemStorageRef(currentKey, item);
+
+    if (ref.key === 'bossSouls') {
+      delete bossSaved[ref.id];
+    } else {
+      delete ownSaved[ref.id];
+    }
+  });
+
+  setChecked(currentKey, ownSaved);
+  setChecked('bossSouls', bossSaved);
+  renderChecklist(currentKey);
+}
+
 function closeMenu(){ sidebar.classList.remove('open'); }
 searchInput.addEventListener('input', () => currentKey !== 'home' && renderChecklist(currentKey));
 resetBtn.addEventListener('click', () => {
   if (currentKey !== 'home' && confirm('Reset this checklist?')) {
-    localStorage.removeItem(STORAGE_PREFIX + currentKey);
-    renderChecklist(currentKey);
+    resetCurrentChecklist();
   }
 });
 menuBtn.addEventListener('click', () => sidebar.classList.toggle('open'));
