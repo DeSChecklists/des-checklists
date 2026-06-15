@@ -4,59 +4,74 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Demon's Souls Checklists</title>
+  <meta name="description" content="Demon's Souls Remake checklist tracker for rings, spells, miracles, boss weapons and boss soul rewards." />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="fog"></div>
-  <button id="menuBtn" class="menu-btn" aria-label="Open menu">☰</button>
+  <div class="fog fog-a"></div>
+  <div class="fog fog-b"></div>
 
-  <aside id="sidebar" class="sidebar">
+  <button class="menu-toggle" id="menuToggle" aria-label="Open menu">☰</button>
+
+  <aside class="sidebar" id="sidebar">
     <div class="brand">
-      <div class="brand-mark">⚔</div>
+      <div class="brand-mark">⚔️</div>
       <div>
         <h1>Demon's Souls</h1>
         <p>Checklists</p>
       </div>
     </div>
 
-    <nav id="nav" class="nav"></nav>
+    <nav class="nav" id="nav"></nav>
 
     <div class="side-progress">
-      <div class="progress-label">
-        <span>Overall</span>
-        <span id="overallPercent">0%</span>
-      </div>
-      <div class="bar"><div id="overallFill"></div></div>
-      <small id="overallCount">0 / 0</small>
+      <span>Overall</span>
+      <strong id="overallSmall">0%</strong>
+      <div class="bar"><div id="overallSmallFill"></div></div>
     </div>
   </aside>
 
   <main class="main">
-    <section class="hero">
+    <section class="hero" id="hero">
       <p class="eyebrow">The Monumental awaits...</p>
-      <h2 id="pageTitle">Demon's Souls Checklists</h2>
-      <p id="pageSubtitle">Track rings, boss souls, spells, miracles and boss weapons.</p>
+      <h2>Demon's Souls Checklists</h2>
+      <p class="subtitle">Track rings, spells, miracles, boss weapons and every boss soul reward in one place.</p>
     </section>
 
-    <section class="tools">
-      <input id="searchInput" type="search" placeholder="Search checklist..." />
-      <button id="resetBtn">Reset This Checklist</button>
-    </section>
+    <section class="dashboard" id="dashboard"></section>
 
-    <section id="dashboard" class="dashboard"></section>
-    <section id="list" class="list"></section>
+    <section class="checklist-view hidden" id="checklistView">
+      <div class="view-head">
+        <button class="back-btn" id="backBtn">← Home</button>
+        <div>
+          <p class="eyebrow" id="viewEyebrow">Checklist</p>
+          <h2 id="viewTitle"></h2>
+          <p class="subtitle" id="viewSubtitle"></p>
+        </div>
+      </div>
+
+      <div class="tools">
+        <input id="search" type="search" placeholder="Search checklist..." />
+        <button id="resetCurrent" class="danger">Reset This Checklist</button>
+      </div>
+
+      <div class="progress-panel">
+        <div class="progress-row">
+          <span id="viewCount">0 / 0</span>
+          <span id="viewPercent">0%</span>
+        </div>
+        <div class="bar"><div id="viewFill"></div></div>
+      </div>
+
+      <div class="items" id="items"></div>
+    </section>
 
     <footer class="footer">
-      <p>
-        <strong>Built for the Demon's Souls Discord Community</strong><br>
-        <a href="https://discord.gg/demonssouls" target="_blank" rel="noopener">https://discord.gg/demonssouls</a>
-      </p>
+      <p><strong>Built for the Demon's Souls Discord Community</strong></p>
+      <p><a href="https://discord.gg/demonssouls" target="_blank" rel="noopener noreferrer">https://discord.gg/demonssouls</a></p>
 
       <p><strong>Please Note:</strong></p>
-      <p>
-        If you think I missed something or there's something wrong with the checklist,
-        feel free to DM <strong>@milkieslol</strong> or <strong>@tomkokkas</strong>.
-      </p>
+      <p>If you think we missed something or there's something wrong with the checklist, feel free to DM <strong>@milkieslol</strong> or <strong>@tomkokkas</strong>.</p>
 
       <p>Site created by <strong>TomKokkas</strong></p>
     </footer>

@@ -1,24 +1,25 @@
-const STORAGE_PREFIX = 'des-checklists-v2:';
+const STORAGE_PREFIX = 'des-checklists-v3:';
+const SHARED_KEY = STORAGE_PREFIX + 'shared-state';
 
 const bossSoulData = [
-  { boss:'Phalanx', group:'World 1', soul:'Lead Demon Soul', rewards:['Scraping Spear'] },
-  { boss:'Tower Knight', group:'World 1', soul:'Iron Demon Soul', rewards:['Warding'] },
-  { boss:'Penetrator', group:'World 1', soul:'Silver Demon Soul', rewards:['Light Weapon','Cursed Weapon'] },
-  { boss:'False King', group:'World 1', soul:'False King Demon Soul', rewards:['Northern Regalia'] },
-  { boss:'Armor Spider', group:'World 2', soul:'Hard Demon Soul', rewards:['Fire Spray','Ignite','Lava Bow'] },
+  { boss:'Phalanx', group:'World 1', soul:'Lead Demon Soul', soulCopies:1, rewards:['Scraping Spear'] },
+  { boss:'Tower Knight', group:'World 1', soul:'Iron Demon Soul', soulCopies:1, rewards:['Warding'] },
+  { boss:'Penetrator', group:'World 1', soul:'Silver Demon Soul', soulCopies:2, rewards:['Light Weapon','Cursed Weapon'] },
+  { boss:'False King', group:'World 1', soul:'False King Demon Soul', soulCopies:1, rewards:['Northern Regalia'] },
+  { boss:'Armor Spider', group:'World 2', soul:'Hard Demon Soul', soulCopies:3, rewards:['Fire Spray','Ignite','Lava Bow'] },
   { boss:'Flamelurker', group:'World 2', soul:'Searing Demon Soul', soulCopies:1, rewards:[], specialEffect:'Unlocks Blacksmith Ed advanced upgrades.' },
-  { boss:'Dragon God', group:'World 2', soul:'Dragon Demon Soul', rewards:['Fireball','Firestorm',"God's Wrath"] },
-  { boss:"Fool's Idol", group:'World 3', soul:'Doll Demon Soul', rewards:['Soul Ray'] },
-  { boss:'Maneater', group:'World 3', soul:'Mixed Demon Soul', rewards:['Needle of Eternal Agony'] },
-  { boss:'Old Monk', group:'World 3', soul:'Golden Demon Soul', rewards:['Homing Soul Arrow','Soul Thirst','Banish','Insane Catalyst'] },
-  { boss:'Adjudicator', group:'World 4', soul:'Swollen Demon Soul', rewards:['Regeneration','Meat Cleaver'] },
-  { boss:'Old Hero', group:'World 4', soul:'Hero Demon Soul', rewards:['Second Chance','Large Sword of Searching'] },
-  { boss:'Storm King', group:'World 4', soul:'Storm Demon Soul', rewards:['Anti-Magic Field','Morion Blade'] },
-  { boss:'Leechmonger', group:'World 5', soul:'Wriggling Demon Soul', rewards:['Poison Cloud','Cure'] },
-  { boss:'Dirty Colossus', group:'World 5', soul:'Eroded Demon Soul', rewards:['Acid Cloud'] },
-  { boss:'Maiden Astraea', group:'World 5', soul:'Pureblood Demon Soul', rewards:['Death Cloud','Relief','Resurrection','Blueblood Sword'] },
-  { boss:'Endgame', group:'Endgame', soul:'Maiden in Black Demon Soul', rewards:['Soulsucker','Recovery','Upgrades'] },
-  { boss:'Vanguard Demon', group:'Other', soul:'Gray Demon Soul', rewards:['Dozer Axe'] }
+  { boss:'Dragon God', group:'World 2', soul:'Dragon Demon Soul', soulCopies:3, rewards:['Fireball','Firestorm',"God's Wrath"] },
+  { boss:"Fool's Idol", group:'World 3', soul:'Doll Demon Soul', soulCopies:1, rewards:['Soul Ray'] },
+  { boss:'Maneater', group:'World 3', soul:'Mixed Demon Soul', soulCopies:1, rewards:['Needle of Eternal Agony'] },
+  { boss:'Old Monk', group:'World 3', soul:'Golden Demon Soul', soulCopies:4, rewards:['Homing Soul Arrow','Soul Thirst','Banish','Insane Catalyst'] },
+  { boss:'Adjudicator', group:'World 4', soul:'Swollen Demon Soul', soulCopies:2, rewards:['Regeneration','Meat Cleaver'] },
+  { boss:'Old Hero', group:'World 4', soul:'Hero Demon Soul', soulCopies:2, rewards:['Second Chance','Large Sword of Searching'] },
+  { boss:'Storm King', group:'World 4', soul:'Storm Demon Soul', soulCopies:2, rewards:['Anti-Magic Field','Morion Blade'] },
+  { boss:'Leechmonger', group:'World 5', soul:'Wriggling Demon Soul', soulCopies:2, rewards:['Poison Cloud','Cure'] },
+  { boss:'Dirty Colossus', group:'World 5', soul:'Eroded Demon Soul', soulCopies:1, rewards:['Acid Cloud'] },
+  { boss:'Maiden Astraea', group:'World 5', soul:'Pureblood Demon Soul', soulCopies:4, rewards:['Death Cloud','Relief','Resurrection','Blueblood Sword'] },
+  { boss:'Endgame', group:'Endgame', soul:'Maiden in Black Demon Soul', soulCopies:2, rewards:['Soulsucker','Recovery','Upgrades'] },
+  { boss:'Vanguard Demon', group:'Other', soul:'Gray Demon Soul', soulCopies:1, rewards:['Dozer Axe'] }
 ];
 
 const checklists = {
@@ -27,11 +28,6 @@ const checklists = {
     items: [
       'Cat\'s Ring','Clever Rat\'s Ring','Cling Ring','Dull Rat\'s Ring','Eternal Warrior\'s Ring','Foe\'s Ring','Fragrant Ring','Friend\'s Ring','Graverobber\'s Ring','Master\'s Ring','Providential Ring','Regenerator\'s Ring','Ring of Avarice','Ring of Devout Prayer','Ring of Disease Resistance','Ring of Fire Resistance','Ring of Flame Resistance','Ring of Gash Resistance','Ring of Great Strength','Ring of Herculean Strength','Ring of Magical Dullness','Ring of Magical Nature','Ring of Magical Sharpness','Ring of Poison Resistance','Ring of Sincere Prayer','Ring of the Accursed','Ring of the Damned','Ring of Longevity','Ronin\'s Ring','Thief Ring'
     ].sort().map(name => ({ name }))
-  },
-  bossSouls: {
-    title: 'Boss Souls', icon: '👹', subtitle: 'Each checkbox uses one soul copy. Duplicate souls are shown as Required ×2, ×3, ×4, etc.',
-    bossCards: true,
-    items: bossSoulData
   },
   spells: {
     title:'Spells', icon:'✨', subtitle:'Sage Freke and Yuria spell rewards.',
@@ -51,9 +47,15 @@ const checklists = {
     items:[
       {name:'Scraping Spear', group:'Blacksmith Ed', soul:'Lead Demon Soul'}, {name:'Northern Regalia', group:'Blacksmith Ed', soul:'False King Demon Soul'}, {name:'Lava Bow', group:'Blacksmith Ed', soul:'Hard Demon Soul'}, {name:'Needle of Eternal Agony', group:'Blacksmith Ed', soul:'Mixed Demon Soul'}, {name:'Insane Catalyst', group:'Blacksmith Ed', soul:'Golden Demon Soul'}, {name:'Meat Cleaver', group:'Blacksmith Ed', soul:'Swollen Demon Soul'}, {name:'Large Sword of Searching', group:'Blacksmith Ed', soul:'Hero Demon Soul'}, {name:'Morion Blade', group:'Blacksmith Ed', soul:'Storm Demon Soul'}, {name:'Blueblood Sword', group:'Blacksmith Ed', soul:'Pureblood Demon Soul'}, {name:'Dozer Axe', group:'Blacksmith Ed', soul:'Gray Demon Soul'}
     ]
+  },
+  bossSouls: {
+    title: 'Boss Souls', icon: '👹', subtitle: 'Each checkbox uses one soul copy. Duplicate souls are shown as Required ×2, ×3, ×4, etc.',
+    bossCards: true,
+    items: bossSoulData
   }
 };
 
+const checklistOrder = ['rings', 'spells', 'miracles', 'weapons', 'bossSouls'];
 let currentKey = 'home';
 const nav = document.getElementById('nav');
 const dashboard = document.getElementById('dashboard');
@@ -65,10 +67,26 @@ const resetBtn = document.getElementById('resetBtn');
 const menuBtn = document.getElementById('menuBtn');
 const sidebar = document.getElementById('sidebar');
 
-function idFor(key, item) { return `${key}:${item.group || 'all'}:${item.name}`; }
-function bossRewardId(item, reward) { return `bossSouls:${item.boss}:${reward}`; }
-function getChecked(key) { return JSON.parse(localStorage.getItem(STORAGE_PREFIX + key) || '{}'); }
-function setChecked(key, data) { localStorage.setItem(STORAGE_PREFIX + key, JSON.stringify(data)); }
+function loadState() {
+  try { return JSON.parse(localStorage.getItem(SHARED_KEY) || '{}'); }
+  catch { return {}; }
+}
+function saveState(state) { localStorage.setItem(SHARED_KEY, JSON.stringify(state)); }
+function stateIdFor(key, item) {
+  if (key === 'rings') return `ring:${item.name}`;
+  return `reward:${item.name}`;
+}
+function rewardId(reward) { return `reward:${reward}`; }
+function isCheckedId(id) { return !!loadState()[id]; }
+function setCheckedId(id, checked) {
+  const state = loadState();
+  if (checked) state[id] = true;
+  else delete state[id];
+  saveState(state);
+}
+function isItemChecked(key, item) { return isCheckedId(stateIdFor(key, item)); }
+function isRewardChecked(reward) { return isCheckedId(rewardId(reward)); }
+function setRewardChecked(reward, checked) { setCheckedId(rewardId(reward), checked); }
 
 function getChecklistTotal(key) {
   if (key === 'bossSouls') return bossSoulData.reduce((sum, boss) => sum + boss.rewards.length, 0);
@@ -76,16 +94,15 @@ function getChecklistTotal(key) {
 }
 
 function countFor(key) {
-  const checked = getChecked(key);
   const total = getChecklistTotal(key);
   let done = 0;
 
   if (key === 'bossSouls') {
     bossSoulData.forEach(boss => boss.rewards.forEach(reward => {
-      if (checked[bossRewardId(boss, reward)]) done += 1;
+      if (isRewardChecked(reward)) done += 1;
     }));
   } else {
-    done = checklists[key].items.filter(item => checked[idFor(key, item)]).length;
+    done = checklists[key].items.filter(item => isItemChecked(key, item)).length;
   }
 
   return { done, total, percent: total ? Math.round(done / total * 100) : 0 };
@@ -93,7 +110,7 @@ function countFor(key) {
 
 function updateOverall() {
   let done = 0, total = 0;
-  Object.keys(checklists).forEach(key => { const c = countFor(key); done += c.done; total += c.total; });
+  checklistOrder.forEach(key => { const c = countFor(key); done += c.done; total += c.total; });
   const percent = total ? Math.round(done / total * 100) : 0;
   document.getElementById('overallPercent').textContent = `${percent}%`;
   document.getElementById('overallCount').textContent = `${done} / ${total}`;
@@ -108,7 +125,8 @@ function renderNav() {
   home.onclick = () => renderHome();
   nav.appendChild(home);
 
-  Object.entries(checklists).forEach(([key, data]) => {
+  checklistOrder.forEach(key => {
+    const data = checklists[key];
     const c = countFor(key);
     const btn = document.createElement('button');
     btn.className = currentKey === key ? 'active' : '';
@@ -124,11 +142,12 @@ function renderHome() {
   searchInput.classList.add('hidden');
   resetBtn.classList.add('hidden');
   title.textContent = "Demon's Souls Checklists";
-  subtitle.textContent = 'Track rings, boss souls, spells, miracles and boss weapons.';
+  subtitle.textContent = 'Track rings, spells, miracles, boss weapons and boss souls.';
   list.innerHTML = '';
   dashboard.innerHTML = '';
 
-  Object.entries(checklists).forEach(([key, data]) => {
+  checklistOrder.forEach(key => {
+    const data = checklists[key];
     const c = countFor(key);
     const card = document.createElement('article');
     card.className = 'dash-card';
@@ -146,7 +165,6 @@ function itemMatches(item, q) {
 
 function renderBossSouls() {
   const q = searchInput.value.trim();
-  const checked = getChecked('bossSouls');
   const groups = {};
 
   bossSoulData.filter(item => !q || itemMatches(item, q)).forEach(item => {
@@ -163,7 +181,7 @@ function renderBossSouls() {
     bosses.forEach(boss => {
       const rewardCount = boss.rewards.length;
       const required = boss.soulCopies || rewardCount;
-      const done = boss.rewards.filter(reward => checked[bossRewardId(boss, reward)]).length;
+      const done = boss.rewards.filter(reward => isRewardChecked(reward)).length;
       const card = document.createElement('article');
       card.className = `boss-card ${rewardCount > 0 && done === rewardCount ? 'checked' : ''}`;
       card.innerHTML = `
@@ -181,15 +199,12 @@ function renderBossSouls() {
 
       const rewardList = card.querySelector('.reward-list');
       boss.rewards.forEach(reward => {
-        const id = bossRewardId(boss, reward);
-        const isChecked = !!checked[id];
+        const isChecked = isRewardChecked(reward);
         const label = document.createElement('label');
         label.className = `reward-item ${isChecked ? 'checked' : ''}`;
         label.innerHTML = `<input type="checkbox" ${isChecked ? 'checked' : ''}><span>${reward}</span>`;
         label.querySelector('input').onchange = (e) => {
-          const saved = getChecked('bossSouls');
-          saved[id] = e.target.checked;
-          setChecked('bossSouls', saved);
+          setRewardChecked(reward, e.target.checked);
           renderChecklist('bossSouls');
         };
         rewardList.appendChild(label);
@@ -219,7 +234,6 @@ function renderChecklist(key) {
   }
 
   const q = searchInput.value.trim();
-  const checked = getChecked(key);
   const groups = {};
 
   data.items.filter(item => !q || itemMatches(item, q)).forEach(item => {
@@ -235,18 +249,14 @@ function renderChecklist(key) {
     const body = group.querySelector('.group-body');
 
     items.forEach(item => {
-      const id = idFor(key, item);
-      const isChecked = !!checked[id];
+      const checked = isItemChecked(key, item);
       const el = document.createElement('label');
-      el.className = `item ${isChecked ? 'checked' : ''}`;
+      el.className = `item ${checked ? 'checked' : ''}`;
       const tags = (item.rewards || []).map(r => `<span class="tag">${r}</span>`).join('');
-      el.innerHTML = `<input type="checkbox" ${isChecked ? 'checked' : ''}><div><h3>${item.name}</h3><div class="meta">${item.soul ? `Soul: ${item.soul}` : ''}</div>${tags ? `<div class="tags">${tags}</div>` : ''}</div>`;
+      el.innerHTML = `<input type="checkbox" ${checked ? 'checked' : ''}><div><h3>${item.name}</h3><div class="meta">${item.soul ? `Soul: ${item.soul}` : ''}</div>${tags ? `<div class="tags">${tags}</div>` : ''}</div>`;
       el.querySelector('input').onchange = (e) => {
-        const saved = getChecked(key);
-        saved[id] = e.target.checked;
-        setChecked(key, saved);
-        el.classList.toggle('checked', e.target.checked);
-        renderNav(); updateOverall();
+        setCheckedId(stateIdFor(key, item), e.target.checked);
+        renderChecklist(key);
       };
       body.appendChild(el);
     });
@@ -260,7 +270,13 @@ function closeMenu(){ sidebar.classList.remove('open'); }
 searchInput.addEventListener('input', () => currentKey !== 'home' && renderChecklist(currentKey));
 resetBtn.addEventListener('click', () => {
   if (currentKey !== 'home' && confirm('Reset this checklist?')) {
-    localStorage.removeItem(STORAGE_PREFIX + currentKey);
+    const state = loadState();
+    if (currentKey === 'bossSouls') {
+      bossSoulData.forEach(boss => boss.rewards.forEach(reward => delete state[rewardId(reward)]));
+    } else {
+      checklists[currentKey].items.forEach(item => delete state[stateIdFor(currentKey, item)]);
+    }
+    saveState(state);
     renderChecklist(currentKey);
   }
 });
