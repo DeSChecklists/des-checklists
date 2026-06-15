@@ -150,11 +150,11 @@ sideProgress.innerHTML = `
   <small>Boss Weapons ${weapons.done}/${weapons.total}</small>
   <small>Boss Souls ${bossSouls.done}/${bossSouls.total}</small>
 
-  <br>
+  <small id="overallCount" style="margin-top:10px;">
+    <strong>Overall ${done} / ${total}</strong>
+  </small>
 
-  <small id="overallCount"><strong>Overall ${done} / ${total}</strong></small>
-
-  <div class="bar" style="margin-top:8px;">
+  <div class="bar" style="margin-top:6px;">
     <div id="overallFill" style="width:${percent}%"></div>
   </div>
 `;
