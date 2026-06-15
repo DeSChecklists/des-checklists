@@ -119,7 +119,8 @@ function renderNav() {
   });
 }
 
-function renderHome() {
+['rings','spells','miracles','weapons','bossSouls'].forEach(key => {
+  const data = checklists[key];
   currentKey = 'home';
   searchInput.value = '';
   searchInput.classList.add('hidden');
