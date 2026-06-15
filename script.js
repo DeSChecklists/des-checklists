@@ -1,4 +1,25 @@
-const STORAGE_PREFIX = 'des-checklists-v1:';
+const STORAGE_PREFIX = 'des-checklists-v2:';
+
+const bossSoulData = [
+  { boss:'Phalanx', group:'World 1', soul:'Lead Demon Soul', rewards:['Scraping Spear'] },
+  { boss:'Tower Knight', group:'World 1', soul:'Iron Demon Soul', rewards:['Warding'] },
+  { boss:'Penetrator', group:'World 1', soul:'Silver Demon Soul', rewards:['Light Weapon','Cursed Weapon'] },
+  { boss:'False King', group:'World 1', soul:'False King Demon Soul', rewards:['Northern Regalia'] },
+  { boss:'Armor Spider', group:'World 2', soul:'Hard Demon Soul', rewards:['Fire Spray','Ignite','Lava Bow'] },
+  { boss:'Flamelurker', group:'World 2', soul:'Searing Demon Soul', soulCopies:1, rewards:[], specialEffect:'Unlocks Blacksmith Ed advanced upgrades.' },
+  { boss:'Dragon God', group:'World 2', soul:'Dragon Demon Soul', rewards:['Fireball','Firestorm',"God's Wrath"] },
+  { boss:"Fool's Idol", group:'World 3', soul:'Doll Demon Soul', rewards:['Soul Ray'] },
+  { boss:'Maneater', group:'World 3', soul:'Mixed Demon Soul', rewards:['Needle of Eternal Agony'] },
+  { boss:'Old Monk', group:'World 3', soul:'Golden Demon Soul', rewards:['Homing Soul Arrow','Soul Thirst','Banish','Insane Catalyst'] },
+  { boss:'Adjudicator', group:'World 4', soul:'Swollen Demon Soul', rewards:['Regeneration','Meat Cleaver'] },
+  { boss:'Old Hero', group:'World 4', soul:'Hero Demon Soul', rewards:['Second Chance','Large Sword of Searching'] },
+  { boss:'Storm King', group:'World 4', soul:'Storm Demon Soul', rewards:['Anti-Magic Field','Morion Blade'] },
+  { boss:'Leechmonger', group:'World 5', soul:'Wriggling Demon Soul', rewards:['Poison Cloud','Cure'] },
+  { boss:'Dirty Colossus', group:'World 5', soul:'Eroded Demon Soul', rewards:['Acid Cloud'] },
+  { boss:'Maiden Astraea', group:'World 5', soul:'Pureblood Demon Soul', rewards:['Death Cloud','Relief','Resurrection','Blueblood Sword'] },
+  { boss:'Endgame', group:'Endgame', soul:'Maiden in Black Demon Soul', rewards:['Soulsucker','Recovery','Upgrades'] },
+  { boss:'Vanguard Demon', group:'Other', soul:'Gray Demon Soul', rewards:['Dozer Axe'] }
+];
 
 const checklists = {
   rings: {
@@ -8,27 +29,9 @@ const checklists = {
     ].sort().map(name => ({ name }))
   },
   bossSouls: {
-    title: 'Boss Souls', icon: '👹', subtitle: 'Every boss soul and what it can become.',
-    items: [
-      { name:'Phalanx', group:'World 1', soul:'Lead Demon Soul', rewards:['Scraping Spear'] },
-      { name:'Tower Knight', group:'World 1', soul:'Iron Demon Soul', rewards:['Warding'] },
-      { name:'Penetrator', group:'World 1', soul:'Silver Demon Soul', rewards:['Light Weapon','Cursed Weapon'] },
-      { name:'False King', group:'World 1', soul:'False King Demon Soul', rewards:['Northern Regalia'] },
-      { name:'Armor Spider', group:'World 2', soul:'Hard Demon Soul', rewards:['Fire Spray','Ignite','Lava Bow'] },
-      { name:'Flamelurker', group:'World 2', soul:'Searing Demon Soul', rewards:['Unlocks These Upgrades'] },
-      { name:'Dragon God', group:'World 2', soul:'Dragon Demon Soul', rewards:['Fireball','Firestorm',"God's Wrath"] },
-      { name:"Fool's Idol", group:'World 3', soul:'Doll Demon Soul', rewards:['Soul Ray'] },
-      { name:'Maneater', group:'World 3', soul:'Mixed Demon Soul', rewards:['Needle of Eternal Agony'] },
-      { name:'Old Monk', group:'World 3', soul:'Golden Demon Soul', rewards:['Homing Soul Arrow','Soul Thirst','Banish','Insane Catalyst'] },
-      { name:'Adjudicator', group:'World 4', soul:'Swollen Demon Soul', rewards:['Regeneration','Meat Cleaver'] },
-      { name:'Old Hero', group:'World 4', soul:'Hero Demon Soul', rewards:['Second Chance','Large Sword of Searching'] },
-      { name:'Storm King', group:'World 4', soul:'Storm Demon Soul', rewards:['Anti-Magic Field','Morion Blade'] },
-      { name:'Leechmonger', group:'World 5', soul:'Wriggling Demon Soul', rewards:['Poison Cloud','Cure'] },
-      { name:'Dirty Colossus', group:'World 5', soul:'Eroded Demon Soul', rewards:['Acid Cloud'] },
-      { name:'Maiden Astraea', group:'World 5', soul:'Pureblood Demon Soul', rewards:['Death Cloud','Relief','Resurrection','Blueblood Sword'] },
-      { name:'Endgame', group:'Endgame', soul:'Maiden in Black Demon Soul', rewards:['Soulsucker','Recovery','Upgrades'] },
-      { name:'Vanguard Demon', group:'Other', soul:'Gray Demon Soul', rewards:['Dozer Axe'] }
-    ]
+    title: 'Boss Souls', icon: '👹', subtitle: 'Each checkbox uses one soul copy. Duplicate souls are shown as Required ×2, ×3, ×4, etc.',
+    bossCards: true,
+    items: bossSoulData
   },
   spells: {
     title:'Spells', icon:'✨', subtitle:'Sage Freke and Yuria spell rewards.',
@@ -63,14 +66,31 @@ const menuBtn = document.getElementById('menuBtn');
 const sidebar = document.getElementById('sidebar');
 
 function idFor(key, item) { return `${key}:${item.group || 'all'}:${item.name}`; }
+function bossRewardId(item, reward) { return `bossSouls:${item.boss}:${reward}`; }
 function getChecked(key) { return JSON.parse(localStorage.getItem(STORAGE_PREFIX + key) || '{}'); }
 function setChecked(key, data) { localStorage.setItem(STORAGE_PREFIX + key, JSON.stringify(data)); }
-function countFor(key) {
-  const items = checklists[key].items;
-  const checked = getChecked(key);
-  const done = items.filter(item => checked[idFor(key, item)]).length;
-  return { done, total: items.length, percent: items.length ? Math.round(done / items.length * 100) : 0 };
+
+function getChecklistTotal(key) {
+  if (key === 'bossSouls') return bossSoulData.reduce((sum, boss) => sum + boss.rewards.length, 0);
+  return checklists[key].items.length;
 }
+
+function countFor(key) {
+  const checked = getChecked(key);
+  const total = getChecklistTotal(key);
+  let done = 0;
+
+  if (key === 'bossSouls') {
+    bossSoulData.forEach(boss => boss.rewards.forEach(reward => {
+      if (checked[bossRewardId(boss, reward)]) done += 1;
+    }));
+  } else {
+    done = checklists[key].items.filter(item => checked[idFor(key, item)]).length;
+  }
+
+  return { done, total, percent: total ? Math.round(done / total * 100) : 0 };
+}
+
 function updateOverall() {
   let done = 0, total = 0;
   Object.keys(checklists).forEach(key => { const c = countFor(key); done += c.done; total += c.total; });
@@ -79,6 +99,7 @@ function updateOverall() {
   document.getElementById('overallCount').textContent = `${done} / ${total}`;
   document.getElementById('overallFill').style.width = `${percent}%`;
 }
+
 function renderNav() {
   nav.innerHTML = '';
   const home = document.createElement('button');
@@ -86,6 +107,7 @@ function renderNav() {
   home.className = currentKey === 'home' ? 'active' : '';
   home.onclick = () => renderHome();
   nav.appendChild(home);
+
   Object.entries(checklists).forEach(([key, data]) => {
     const c = countFor(key);
     const btn = document.createElement('button');
@@ -95,12 +117,17 @@ function renderNav() {
     nav.appendChild(btn);
   });
 }
+
 function renderHome() {
-  currentKey = 'home'; searchInput.value = ''; searchInput.classList.add('hidden'); resetBtn.classList.add('hidden');
+  currentKey = 'home';
+  searchInput.value = '';
+  searchInput.classList.add('hidden');
+  resetBtn.classList.add('hidden');
   title.textContent = "Demon's Souls Checklists";
   subtitle.textContent = 'Track rings, boss souls, spells, miracles and boss weapons.';
   list.innerHTML = '';
   dashboard.innerHTML = '';
+
   Object.entries(checklists).forEach(([key, data]) => {
     const c = countFor(key);
     const card = document.createElement('article');
@@ -111,44 +138,131 @@ function renderHome() {
   });
   renderNav(); updateOverall(); closeMenu();
 }
+
 function itemMatches(item, q) {
-  const haystack = [item.name, item.group, item.soul, ...(item.rewards || [])].filter(Boolean).join(' ').toLowerCase();
+  const haystack = [item.name, item.boss, item.group, item.soul, item.specialEffect, ...(item.rewards || [])].filter(Boolean).join(' ').toLowerCase();
   return haystack.includes(q.toLowerCase());
 }
+
+function renderBossSouls() {
+  const q = searchInput.value.trim();
+  const checked = getChecked('bossSouls');
+  const groups = {};
+
+  bossSoulData.filter(item => !q || itemMatches(item, q)).forEach(item => {
+    groups[item.group] ||= [];
+    groups[item.group].push(item);
+  });
+
+  Object.entries(groups).forEach(([groupName, bosses]) => {
+    const group = document.createElement('section');
+    group.className = 'group';
+    group.innerHTML = `<div class="group-title">${groupName}</div><div class="group-body"></div>`;
+    const body = group.querySelector('.group-body');
+
+    bosses.forEach(boss => {
+      const rewardCount = boss.rewards.length;
+      const required = boss.soulCopies || rewardCount;
+      const done = boss.rewards.filter(reward => checked[bossRewardId(boss, reward)]).length;
+      const card = document.createElement('article');
+      card.className = `boss-card ${rewardCount > 0 && done === rewardCount ? 'checked' : ''}`;
+      card.innerHTML = `
+        <div class="boss-head">
+          <div>
+            <h3>${boss.boss}</h3>
+            <div class="meta">${boss.soul}</div>
+          </div>
+          <span class="soul-count">Required ×${required}</span>
+        </div>
+        <div class="boss-progress">${rewardCount ? `${done} / ${rewardCount} rewards checked` : 'No checklist reward — informational only'}</div>
+        <div class="reward-list"></div>
+        ${boss.specialEffect ? `<div class="special-effect"><strong>🔓 Special Effect</strong><span>${boss.specialEffect}</span></div>` : ''}
+      `;
+
+      const rewardList = card.querySelector('.reward-list');
+      boss.rewards.forEach(reward => {
+        const id = bossRewardId(boss, reward);
+        const isChecked = !!checked[id];
+        const label = document.createElement('label');
+        label.className = `reward-item ${isChecked ? 'checked' : ''}`;
+        label.innerHTML = `<input type="checkbox" ${isChecked ? 'checked' : ''}><span>${reward}</span>`;
+        label.querySelector('input').onchange = (e) => {
+          const saved = getChecked('bossSouls');
+          saved[id] = e.target.checked;
+          setChecked('bossSouls', saved);
+          renderChecklist('bossSouls');
+        };
+        rewardList.appendChild(label);
+      });
+
+      body.appendChild(card);
+    });
+
+    list.appendChild(group);
+  });
+}
+
 function renderChecklist(key) {
-  currentKey = key; const data = checklists[key];
-  searchInput.classList.remove('hidden'); resetBtn.classList.remove('hidden');
-  title.textContent = `${data.icon} ${data.title}`; subtitle.textContent = data.subtitle;
-  dashboard.innerHTML = ''; list.innerHTML = '';
+  currentKey = key;
+  const data = checklists[key];
+  searchInput.classList.remove('hidden');
+  resetBtn.classList.remove('hidden');
+  title.textContent = `${data.icon} ${data.title}`;
+  subtitle.textContent = data.subtitle;
+  dashboard.innerHTML = '';
+  list.innerHTML = '';
+
+  if (key === 'bossSouls') {
+    renderBossSouls();
+    renderNav(); updateOverall(); closeMenu();
+    return;
+  }
+
   const q = searchInput.value.trim();
   const checked = getChecked(key);
   const groups = {};
+
   data.items.filter(item => !q || itemMatches(item, q)).forEach(item => {
     const group = item.group || data.title;
     groups[group] ||= [];
     groups[group].push(item);
   });
+
   Object.entries(groups).forEach(([groupName, items]) => {
-    const group = document.createElement('section'); group.className = 'group';
+    const group = document.createElement('section');
+    group.className = 'group';
     group.innerHTML = `<div class="group-title">${groupName}</div><div class="group-body"></div>`;
     const body = group.querySelector('.group-body');
+
     items.forEach(item => {
-      const id = idFor(key, item); const isChecked = !!checked[id];
-      const el = document.createElement('label'); el.className = `item ${isChecked ? 'checked' : ''}`;
+      const id = idFor(key, item);
+      const isChecked = !!checked[id];
+      const el = document.createElement('label');
+      el.className = `item ${isChecked ? 'checked' : ''}`;
       const tags = (item.rewards || []).map(r => `<span class="tag">${r}</span>`).join('');
       el.innerHTML = `<input type="checkbox" ${isChecked ? 'checked' : ''}><div><h3>${item.name}</h3><div class="meta">${item.soul ? `Soul: ${item.soul}` : ''}</div>${tags ? `<div class="tags">${tags}</div>` : ''}</div>`;
       el.querySelector('input').onchange = (e) => {
-        const saved = getChecked(key); saved[id] = e.target.checked; setChecked(key, saved);
-        el.classList.toggle('checked', e.target.checked); renderNav(); updateOverall();
+        const saved = getChecked(key);
+        saved[id] = e.target.checked;
+        setChecked(key, saved);
+        el.classList.toggle('checked', e.target.checked);
+        renderNav(); updateOverall();
       };
       body.appendChild(el);
     });
     list.appendChild(group);
   });
+
   renderNav(); updateOverall(); closeMenu();
 }
+
 function closeMenu(){ sidebar.classList.remove('open'); }
 searchInput.addEventListener('input', () => currentKey !== 'home' && renderChecklist(currentKey));
-resetBtn.addEventListener('click', () => { if (currentKey !== 'home' && confirm('Reset this checklist?')) { localStorage.removeItem(STORAGE_PREFIX + currentKey); renderChecklist(currentKey); } });
+resetBtn.addEventListener('click', () => {
+  if (currentKey !== 'home' && confirm('Reset this checklist?')) {
+    localStorage.removeItem(STORAGE_PREFIX + currentKey);
+    renderChecklist(currentKey);
+  }
+});
 menuBtn.addEventListener('click', () => sidebar.classList.toggle('open'));
 renderHome();
