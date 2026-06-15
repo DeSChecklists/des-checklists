@@ -108,8 +108,7 @@ function renderNav() {
   home.onclick = () => renderHome();
   nav.appendChild(home);
 
-  ['rings','spells','miracles','weapons','bossSouls'].forEach(key => {
-  const data = checklists[key];
+  Object.entries(checklists).forEach(([key, data]) => {
     const c = countFor(key);
     const btn = document.createElement('button');
     btn.className = currentKey === key ? 'active' : '';
@@ -119,8 +118,7 @@ function renderNav() {
   });
 }
 
-['rings','spells','miracles','weapons','bossSouls'].forEach(key => {
-  const data = checklists[key];
+function renderHome() {
   currentKey = 'home';
   searchInput.value = '';
   searchInput.classList.add('hidden');
