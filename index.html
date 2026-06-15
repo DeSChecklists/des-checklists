@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Demon's Souls Checklists</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="fog"></div>
+  <button id="menuBtn" class="menu-btn" aria-label="Open menu">☰</button>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">⚔</div>
+      <div>
+        <h1>Demon's Souls</h1>
+        <p>Checklists</p>
+      </div>
+    </div>
+
+    <nav id="nav" class="nav"></nav>
+
+    <div class="side-progress">
+      <div class="progress-label">
+        <span>Overall</span>
+        <span id="overallPercent">0%</span>
+      </div>
+      <div class="bar"><div id="overallFill"></div></div>
+      <small id="overallCount">0 / 0</small>
+    </div>
+  </aside>
+
+  <main class="main">
+    <section class="hero">
+      <p class="eyebrow">The Monumental awaits...</p>
+      <h2 id="pageTitle">Demon's Souls Checklists</h2>
+      <p id="pageSubtitle">Track rings, boss souls, spells, miracles and boss weapons.</p>
+    </section>
+
+    <section class="tools">
+      <input id="searchInput" type="search" placeholder="Search checklist..." />
+      <button id="resetBtn">Reset This Checklist</button>
+    </section>
+
+    <section id="dashboard" class="dashboard"></section>
+    <section id="list" class="list"></section>
+
+    <footer class="footer">
+      <p><strong>Please Note:</strong> If you think I missed something or there’s something wrong with the checklist, feel free to DM me: <strong>@milkies</strong></p>
+      <p>Built by <strong>DESChecklists</strong></p>
+    </footer>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
