@@ -109,7 +109,7 @@ function renderNav() {
   nav.appendChild(home);
 
   ['rings','spells','miracles','weapons','bossSouls'].forEach(key => {
-  const data = checklists[key];
+    const data = checklists[key];
     const c = countFor(key);
     const btn = document.createElement('button');
     btn.className = currentKey === key ? 'active' : '';
@@ -119,8 +119,7 @@ function renderNav() {
   });
 }
 
-['rings','spells','miracles','weapons','bossSouls'].forEach(key => {
-  const data = checklists[key];
+function renderHome() {
   currentKey = 'home';
   searchInput.value = '';
   searchInput.classList.add('hidden');
@@ -130,7 +129,8 @@ function renderNav() {
   list.innerHTML = '';
   dashboard.innerHTML = '';
 
-  Object.entries(checklists).forEach(([key, data]) => {
+  ['rings','spells','miracles','weapons','bossSouls'].forEach(key => {
+    const data = checklists[key];
     const c = countFor(key);
     const card = document.createElement('article');
     card.className = 'dash-card';
