@@ -138,21 +138,26 @@ function updateOverall() {
 
   const sideProgress = document.querySelector('.side-progress');
 
-  sideProgress.innerHTML = `
-    <div class="progress-label">
-      <span>Progress</span>
-      <span id="overallPercent">${percent}%</span>
-    </div>
+sideProgress.innerHTML = `
+  <div class="progress-label">
+    <span>Progress</span>
+    <span>${percent}%</span>
+  </div>
 
-    <small>Rings ${rings.done}/${rings.total}</small>
-    <small>Spells ${spells.done}/${spells.total}</small>
-    <small>Miracles ${miracles.done}/${miracles.total}</small>
-    <small>Boss Weapons ${weapons.done}/${weapons.total}</small>
-    <small>Boss Souls ${bossSouls.done}/${bossSouls.total}</small>
+  <small>Rings ${rings.done}/${rings.total}</small>
+  <small>Spells ${spells.done}/${spells.total}</small>
+  <small>Miracles ${miracles.done}/${miracles.total}</small>
+  <small>Boss Weapons ${weapons.done}/${weapons.total}</small>
+  <small>Boss Souls ${bossSouls.done}/${bossSouls.total}</small>
 
-    <div class="bar"><div id="overallFill" style="width:${percent}%"></div></div>
-    <small id="overallCount">Overall ${done} / ${total}</small>
-  `;
+  <br>
+
+  <small id="overallCount"><strong>Overall ${done} / ${total}</strong></small>
+
+  <div class="bar" style="margin-top:8px;">
+    <div id="overallFill" style="width:${percent}%"></div>
+  </div>
+`;
 }
 
 function renderNav() {
