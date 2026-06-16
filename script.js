@@ -399,8 +399,25 @@ function renderChecklist(key) {
       const el = document.createElement('label');
       el.className = `item ${isChecked ? 'checked' : ''}`;
       const tags = (item.rewards || []).map(r => `<span class="tag">${r}</span>`).join('');
+      const formatRingDetail = (detail) => {
+        const tagMatches = detail.match(/\[(.*?)\]/g) || [];
+        const cleanText = detail.replace(/\s*\[(.*?)\]/g, '').trim();
+
+        const tagHtml = tagMatches.map(tag => {
+          const label = tag.replace('[', '').replace(']', '')
+            .replace('Pure White World Tendency', 'PWWT')
+            .replace('Pure Black World Tendency', 'PBWT')
+            .replace('Pure White Character Tendency', 'PWCT')
+            .replace('Pure Black Character Tendency', 'PBCT');
+
+          return `<span style="display:inline-block;margin-left:6px;padding:2px 7px;border:1px solid rgba(214,179,90,.45);border-radius:999px;color:#fff3c8;background:rgba(214,179,90,.10);font-size:12px;">${label}</span>`;
+        }).join('');
+
+        return `• ${cleanText}${tagHtml}`;
+      };
+
       const ringDetails = key === 'rings' && item.details && item.details.length
-        ? `<div class="meta">${item.details.map(detail => `• ${detail}`).join('<br>')}</div>`
+        ? `<div class="meta">${item.details.map(formatRingDetail).join('<br>')}</div>`
         : '';
 
       el.innerHTML = `<input type="checkbox" ${isChecked ? 'checked' : ''}><div><h3>${item.name}</h3>${ringDetails || `<div class="meta">${item.soul ? `Soul: ${item.soul}` : ''}</div>`}${tags ? `<div class="tags">${tags}</div>` : ''}</div>`;
