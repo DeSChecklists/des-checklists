@@ -22,12 +22,111 @@ const bossSoulData = [
   { boss:'Vanguard Demon', group:'Other', soul:'Gray Demon Soul', rewards:['Dozer Axe'] }
 ];
 
+
+const RING_DETAILS = {
+  "Cat's Ring": [
+    "Can be bought from Patches in the Nexus for 40,000 souls.",
+    "Can be found in 5-2 (Swamp of Sorrow), near the Meat Cleaver-wielding black phantom to the left of the first fog gate."
+  ],
+  "Clever Rat's Ring": ["In the middle of the ballista platform in 3-1 (Prison of Hope)."],
+  "Cling Ring": ["In 1-1 (Gates of Boletaria) by the first tower shortcut."],
+  "Dull Rat's Ring": ["Can be acquired by rescuing Rydell in 3-1 (Prison of Hope). [Pure White World Tendency]"],
+  "Eternal Warrior's Ring": ["Dropped by defeating Old King Doran in 1-1 (Gates of Boletaria)."],
+  "Foe's Ring": ["Given by Mephistopheles after killing Yuria, the Witch (Nexus). [Pure Black Character Tendency]"],
+  "Fragrant Ring": [
+    "In the 3-2 (Upper Latria) swamp next to the Primeval Demon.",
+    "Trade a Brass Telescope with Sparkly the Crow.",
+    "Can be bought from Patches for 60,000 souls.",
+    "The Royalty class starts with this item."
+  ],
+  "Friend's Ring": ["Can be obtained by talking to the Monumental in the Nexus. [Pure White Character Tendency]"],
+  "Graverobber's Ring": [
+    "Dropped by Graverobber Blige.",
+    "In 4-1 (Island's Edge), before the boss gate on an elevated ledge."
+  ],
+  "Master's Ring": [
+    "At a dead end of a hallway on a lootable corpse by the second ballista in Dragon God's arena.",
+    "Dropped from Executioner Miralda in 1-1 (Gates of Boletaria). [Pure White World Tendency]"
+  ],
+  "Providential Ring": [
+    "Can be chosen as a starting gift.",
+    "Trade a Large Sword of Searching with Sparkly the Crow."
+  ],
+  "Regenerator's Ring": [
+    "Trade the Jade Hair Ornament with Sparkly the Crow.",
+    "By the crystal lizard before the boss in 4-1 (Island's Edge).",
+    "On a corpse near the Mirdan Hammer in 5-2 (Swamp of Sorrow)."
+  ],
+  "Ring of Avarice": [
+    "Found where the Heart drops in 3-2 (Upper Latria).",
+    "Bought from the Former Noble's Wife in Prison of Hope for 50,000 souls."
+  ],
+  "Ring of Devout Prayer": [
+    "Dropped by Saint Urbain.",
+    "Trade Large Sword of Moonlight with Sparkly the Crow.",
+    "Trade Crest of Vinland with Selen Vinland in 5-2 (Swamp of Sorrow). [Pure White World Tendency]"
+  ],
+  "Ring of Disease Resistance": [
+    "On a scaffolding across from the cave with two crystal lizards in 2-2 (Tunnel City).",
+    "In 3-2 (Upper Latria) swamp, near the Primeval Demon."
+  ],
+  "Ring of Fire Resistance": [
+    "By the dragon's rest in 1-1 (Gates of Boletaria).",
+    "Gift from Patches after escaping his trap in 2-2 (Tunnel City)."
+  ],
+  "Ring of Flame Resistance": [
+    "By the dragon's rest in 1-1 (Gates of Boletaria).",
+    "Gift from Patches after escaping his trap in 2-2 (Tunnel City)."
+  ],
+  "Ring of Gash Resistance": [
+    "On a corpse in the tunnel under the bridge in 1-2 (Lord's Path).",
+    "Speak with Patches after rescuing St. Urbain in 4-2 (Ritual Path)."
+  ],
+  "Ring of Great Strength": [
+    "By the dragon's rest in 1-1 (Gates of Boletaria).",
+    "Dropped by Biorr, of the Twin Fangs."
+  ],
+  "Ring of Herculean Strength": [
+    "Dropped by killing Stockpile Thomas (Nexus).",
+    "Give Thomas the Jade Hair Ornament."
+  ],
+  "Ring of Longevity": ["Trade Pure Bladestone with Sparkly the Crow."],
+  "Ring of Magical Dullness": [
+    "Trade Phosphorescent Pole with Sparkly the Crow.",
+    "On a rooftop near the end of the shortcut in 5-1 (Depraved Chasm)."
+  ],
+  "Ring of Magical Nature": ["In the tower where Yuria, the Witch is held in 1-3 (Inner Ward)."],
+  "Ring of Magical Sharpness": [
+    "Dropped by Sage Freke.",
+    "In an iron maiden on the 4th floor of 3-1 (Prison of Hope)."
+  ],
+  "Ring of Poison Resistance": [
+    "Corner in the cooled-off lava pit in 2-1 (Smithing Grounds).",
+    "On the stairs near Executioner Miralda in 1-1 (Gates of Boletaria). [Pure White World Tendency / Pure Black World Tendency]"
+  ],
+  "Ring of Sincere Prayer": ["Obtained from killing Maiden Astraea."],
+  "Ring of the Accursed": [
+    "In the tower where Yuria, the Witch is held in 1-3 (Inner Ward).",
+    "Dropped by Mephistopheles (Nexus). [Pure Black Character Tendency]"
+  ],
+  "Ring of the Damned": ["Trade a Gold Coin with Sparkly the Crow."],
+  "Ronin's Ring": [
+    "Dropped by Scirvir, the Wanderer in 2-2 (Tunnel City). [Pure White World Tendency]",
+    "In the slug cave area in 4-2 (Ritual Path)."
+  ],
+  "Thief Ring": [
+    "On a vaulted platform with Ostrava in 1-1 (Gates of Boletaria).",
+    "Near where Selen Vinland spawns on a small island in 5-2 (Swamp of Sorrow).",
+    "Dropped after killing Patches (Nexus)."
+  ]
+};
+
 const checklists = {
   rings: {
     title: 'Rings', icon: '💍', subtitle: 'King of Ring\'s Trophy • Demon\'s Souls Remake',
     items: [
       'Cat\'s Ring','Clever Rat\'s Ring','Cling Ring','Dull Rat\'s Ring','Eternal Warrior\'s Ring','Foe\'s Ring','Fragrant Ring','Friend\'s Ring','Graverobber\'s Ring','Master\'s Ring','Providential Ring','Regenerator\'s Ring','Ring of Avarice','Ring of Devout Prayer','Ring of Disease Resistance','Ring of Fire Resistance','Ring of Flame Resistance','Ring of Gash Resistance','Ring of Great Strength','Ring of Herculean Strength','Ring of Magical Dullness','Ring of Magical Nature','Ring of Magical Sharpness','Ring of Poison Resistance','Ring of Sincere Prayer','Ring of the Accursed','Ring of the Damned','Ring of Longevity','Ronin\'s Ring','Thief Ring'
-    ].sort().map(name => ({ name }))
+    ].sort().map(name => ({ name, details: RING_DETAILS[name] || [] }))
   },
   bossSouls: {
     title: 'Boss Souls', icon: '👹', subtitle: 'Each checkbox uses one soul copy. Duplicate souls are shown as Required ×2, ×3, ×4, etc.',
@@ -300,9 +399,11 @@ function renderChecklist(key) {
       const el = document.createElement('label');
       el.className = `item ${isChecked ? 'checked' : ''}`;
       const tags = (item.rewards || []).map(r => `<span class="tag">${r}</span>`).join('');
-      el.innerHTML = `<input type="checkbox" ${isChecked ? 'checked' : ''}><div><h3>${item.name}</h3>
-${item.description ? `<div class="meta">${item.description}</div>` : ''}
-<div class="meta">${item.soul ? `Soul: ${item.soul}` : ''}</div>${tags ? `<div class="tags">${tags}</div>` : ''}</div>`;
+      const ringDetails = key === 'rings' && item.details && item.details.length
+        ? `<div class="meta">${item.details.map(detail => `• ${detail}`).join('<br>')}</div>`
+        : '';
+
+      el.innerHTML = `<input type="checkbox" ${isChecked ? 'checked' : ''}><div><h3>${item.name}</h3>${ringDetails || `<div class="meta">${item.soul ? `Soul: ${item.soul}` : ''}</div>`}${tags ? `<div class="tags">${tags}</div>` : ''}</div>`;
       el.querySelector('input').onchange = (e) => {
         setItemChecked(key, item, e.target.checked);
         el.classList.toggle('checked', e.target.checked);
