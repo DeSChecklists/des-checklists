@@ -18,7 +18,7 @@ const bossSoulData = [
   { boss:'Leechmonger', group:'World 5', soul:'Wriggling Demon Soul', rewards:['Poison Cloud','Cure'] },
   { boss:'Dirty Colossus', group:'World 5', soul:'Eroded Demon Soul', rewards:['Acid Cloud'] },
   { boss:'Maiden Astraea', group:'World 5', soul:'Pureblood Demon Soul', rewards:['Death Cloud','Relief','Resurrection','Blueblood Sword'] },
-  { boss:'Endgame', group:'Endgame', soul:'Maiden in Black Demon Soul', rewards:['Soulsucker','Recovery','Upgrades'] },
+  { boss:'Endgame', group:'Endgame', soul:'Maiden in Black Demon Soul', rewards:['Soulsucker'] },
   { boss:'Vanguard Demon', group:'Other', soul:'Gray Demon Soul', rewards:['Dozer Axe'] }
 ];
 
